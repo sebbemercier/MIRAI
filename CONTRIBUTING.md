@@ -1,15 +1,11 @@
-# Guide de Contribution The OpenSLM Project
+# Contributing to MIRAI
 
-Merci de vouloir aider à construire le futur du commerce digital rapide !
+MIRAI is the sales and interaction engine of the OpenSLM ecosystem.
 
-## Comment contribuer ?
-1. **Améliorer un SLM** : Chaque modèle (ATLAS, MIRAI, MUSE, IRIS) a sa propre logique dans son dossier.
-2. **Nouveaux Datasets** : Ajoute des exemples d'instructions dans `/data`.
-3. **Connecteurs** : Aide-nous à connecter d'autres bases de données que ScyllaDB.
+## Specific Focus
+- Intent classification for e-commerce.
+- Sales funnel optimization.
+- Multi-language sales dialogue management.
 
-## Installation
-Nous utilisons `uv` pour une performance maximale.
-```bash
-curl -LsSf https://astral.sh/uv/install.sh | sh
-uv venv
-```
+## Guidelines
+Please ensure all NLP-related changes are tested against our trilingue (FR, NL, EN) benchmark.
