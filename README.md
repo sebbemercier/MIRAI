@@ -1,5 +1,5 @@
 # MIRAI - Sales & Interaction SLM
-Le pilier "Rapide" de CEDRA. L'interface de vente directe et rapide.
+Le pilier "Rapide". L'interface de vente directe et rapide.
 
 ## Rôle
 - Compréhension de l'intention client.
