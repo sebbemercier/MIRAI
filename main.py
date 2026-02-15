@@ -1,36 +1,23 @@
-from fastapi import FastAPI
-import httpx
-import torch
-import asyncio
-from transformers import pipeline
+# Copyright 2026 The OpenSLM Project
+# Licensed under the Apache License, Version 2.0
+# http://www.apache.org/licenses/LICENSE-2.0
 
-app = FastAPI(title="MIRAI | Le Stratège")
+import sentencepiece as spm
 
-ATLAS_URL = "http://localhost:8001"
-IRIS_URL = "http://localhost:8002"
+class MiraiSales:
+    def __init__(self, tokenizer_path="../ATLAS/ecommerce_tokenizer.model"):
+        self.sp = spm.SentencePieceProcessor(model_file=tokenizer_path)
 
-print("Chargement du SLM MIRAI (TinyLlama)...")
-pipe = pipeline("text-generation", model="TinyLlama/TinyLlama-1.1B-Chat-v1.0", torch_dtype=torch.bfloat16, device_map="auto")
-
-@app.get("/sales-strategy/{product_id}")
-async def get_strategy(product_id: int):
-    async with httpx.AsyncClient() as client:
-        # MIRAI interroge ATLAS et IRIS
-        p_res = await client.get(f"{ATLAS_URL}/product/{product_id}")
-        a_res = await client.get(f"{IRIS_URL}/analyze/{product_id}")
+    def process_customer_query(self, text):
+        # Tokenisation de la demande client
+        tokens = self.sp.encode_as_pieces(text)
+        print(f"MIRAI (Analyse): {tokens}")
         
-        product = p_res.json()
-        analysis = a_res.json()
+        if "stock" in text.lower() or "disponible" in text.lower():
+            return "CHECK_STOCK"
+        return "GENERAL_QUERY"
 
-    prompt = f"<|system|>\nTu es MIRAI, un expert en conversion de vente. Propose une stratégie promotionnelle unique basée sur l'analyse suivante.</s>\n<|user|>\nProduit: {product['name']}\nAnalyse de IRIS: {analysis['ai_analysis']}</s>\n<|assistant|>\n"
-    
-    outputs = pipe(prompt, max_new_tokens=60, do_sample=True, temperature=0.8)
-    strategy = outputs[0]["generated_text"].split("<|assistant|>\n")[-1].strip()
-    
-    return {
-        "target_product": product["name"],
-        "strategy": strategy
-    }
 if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8003)
+    mirai = MiraiSales()
+    action = mirai.process_customer_query("Bonjour, avez-vous du stock sur les Nike Air ?")
+    print(f"Action déterminée : {action}")
