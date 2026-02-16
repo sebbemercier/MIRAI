@@ -36,7 +36,7 @@ class MiraiSalesAgent:
             return "Je ne suis pas sûr de comprendre. Voulez-vous des informations sur un produit ou vérifier un stock ?"
 
     def _classify_intent(self, text):
-        if any(word in text for word in ["stock", "disponible", "poids", "matière", "taille"]):
+        if any(word in text for word in ["stock", "disponible", "poids", "matière", "taille", "infos", "informations", "prix", "détails"]):
             return "PRODUCT_QUERY"
         if any(word in text for word in ["bonjour", "hello", "hi"]):
             return "GREETING"
