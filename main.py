@@ -2,31 +2,29 @@
 # Licensed under the Apache License, Version 2.0
 import sentencepiece as spm
 from ATLAS.model import AtlasAgent
-# On importera MUSE plus tard pour le contenu SEO
+from MUSE.main import MuseSEO
 
 class MiraiSalesAgent:
     def __init__(self, tokenizer_path="models/ecommerce_tokenizer.model"):
         self.sp = spm.SentencePieceProcessor(model_file=tokenizer_path)
-        self.atlas = AtlasAgent() # MIRAI utilise ATLAS pour la connaissance produit
+        self.atlas = AtlasAgent()
+        self.muse = MuseSEO() # MIRAI utilise MUSE pour la rédaction
 
     def process_query(self, user_text):
         print(f"\n--- MIRAI Processing: '{user_text}' ---")
         
         # 1. Analyse des tokens pour détecter l'intention
-        ids = self.sp.encode_as_ids(user_text)
-        pieces = self.sp.encode_as_pieces(user_text)
-        
-        # Logique simplifiée d'intention (sera remplacée par un petit modèle de classification)
         intent = self._classify_intent(user_text.lower())
         
         if intent == "PRODUCT_QUERY":
-            # Extraire le SKU (pour le test on simule l'extraction)
             sku = self._extract_sku(user_text)
-            print(f"MIRAI: Intention détectée -> Information Produit pour {sku}")
             
-            # Appel à ATLAS
-            product_info = self.atlas.handle_query(sku)
-            return self._format_sales_response(product_info)
+            # Appel à ATLAS pour les faits
+            atlas_output = self.atlas.handle_query(sku)
+            
+            # Appel à MUSE pour la rédaction avec citations
+            final_copy = self.muse.write_sales_copy(sku, atlas_output, self.atlas.sources)
+            return f"MIRAI (Sales Advisor):\n\n{final_copy}"
             
         elif intent == "GREETING":
             return "Bonjour ! Je suis l'assistant de vente OpenSLM. Comment puis-je vous aider aujourd'hui ?"
