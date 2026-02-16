@@ -4,9 +4,12 @@ import sentencepiece as spm
 from ATLAS.model import AtlasAgent
 from MUSE.main import MuseSEO
 
+from MIRAI.config import settings
+
 class MiraiSalesAgent:
-    def __init__(self, tokenizer_path="models/ecommerce_tokenizer.model"):
-        self.sp = spm.SentencePieceProcessor(model_file=tokenizer_path)
+    def __init__(self, tokenizer_path=None):
+        t_path = tokenizer_path or settings.TOKENIZER_PATH
+        self.sp = spm.SentencePieceProcessor(model_file=t_path)
         self.atlas = AtlasAgent()
         self.muse = MuseSEO() # MIRAI utilise MUSE pour la rédaction
 
