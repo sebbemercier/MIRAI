@@ -5,7 +5,7 @@
 import sentencepiece as spm
 
 class MiraiSales:
-    def __init__(self, tokenizer_path="../ATLAS/ecommerce_tokenizer.model"):
+    def __init__(self, tokenizer_path="models/ecommerce_tokenizer.model"):
         self.sp = spm.SentencePieceProcessor(model_file=tokenizer_path)
 
     def process_customer_query(self, text):
